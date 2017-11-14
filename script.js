@@ -57,7 +57,7 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.lineTo(upperLeftCornerX + width / 2, upperLeftCornerY + height + arrow_height);
     ctx.fill();
     ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width); 
-    ctx.font = "20px Arial";
+    ctx.font = (width * 20/100) + "px Arial";
     ctx.fillStyle="white";
     ctx.textAlign = "center";
     ctx.fillText(score,upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5));
