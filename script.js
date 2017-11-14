@@ -7,7 +7,7 @@ var ctx = myCanvas.getContext("2d");
 var coalitions = {
     "Order": 1100,
     "Federation": 1350,
-    "Alliance": 680,
+    "Alliance": 2000,
     "Assembly": 1020
 };
 
@@ -74,6 +74,13 @@ function addImageProcess(src){
   })
 }
 
+function drawText(ctx, upperLeftCornerX, upperLeftCornerY, fontSize, fontColor, text) {
+    ctx.font = fontSize + "px Arial";
+    ctx.fillStyle=fontColor;
+    ctx.textAlign = "center";
+    ctx.fillText(text,upperLeftCornerX, upperLeftCornerY);
+}
+
 async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score){
     height = height - arrow_height;
     ctx.save();
@@ -84,12 +91,11 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.lineTo(upperLeftCornerX + width, upperLeftCornerY + height);
     ctx.lineTo(upperLeftCornerX + width / 2, upperLeftCornerY + height + arrow_height);
     ctx.fill();
-    ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width); 
-    ctx.font = (width * 20/100) + "px Arial";
-    ctx.fillStyle="white";
-    ctx.textAlign = "center";
-    ctx.fillText(score,upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5));
-    drawStar(ctx,upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/3, arrow_height/6);
+    ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width);
+    drawText(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5), width * 20/100, "white", score);
+    drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/3, arrow_height/6);
+    drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, "white", 7);
+    drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, "white", 7);
     ctx.restore();
 }
 
