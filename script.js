@@ -26,6 +26,34 @@ var myBarchart = new Barchart(
 );
 myBarchart.draw();
 
+function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius){
+  var rot=Math.PI/2*3;
+  var x=cx;
+  var y=cy;
+  var step=Math.PI/spikes;
+
+  ctx.beginPath();
+  ctx.moveTo(cx,cy-outerRadius)
+  for(i=0;i<spikes;i++){
+    x=cx+Math.cos(rot)*outerRadius;
+    y=cy+Math.sin(rot)*outerRadius;
+    ctx.lineTo(x,y)
+    rot+=step
+
+    x=cx+Math.cos(rot)*innerRadius;
+    y=cy+Math.sin(rot)*innerRadius;
+    ctx.lineTo(x,y)
+    rot+=step
+  }
+  ctx.lineTo(cx,cy-outerRadius);
+  ctx.closePath();
+  ctx.lineWidth=innerRadius/2;
+  ctx.strokeStyle='white';
+  ctx.stroke();
+  ctx.fillStyle='transparent';
+  ctx.fill();
+}
+
 function drawLine(ctx, startX, startY, endX, endY,color){
     ctx.save();
     ctx.strokeStyle = color;
@@ -61,6 +89,7 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.fillStyle="white";
     ctx.textAlign = "center";
     ctx.fillText(score,upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5));
+    drawStar(ctx,upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/3, arrow_height/6);
     ctx.restore();
 }
 
