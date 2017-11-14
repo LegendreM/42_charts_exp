@@ -17,7 +17,7 @@ var myBarchart = new Barchart(
         outer_padding:30,
         inner_padding:10,
         arrow_height:30,
-        gridScale:250,
+        gridScale:0,
         gridColor:"#eeeeee",
         data:coalitions,
         colors:["#FF6849","#184D9B", "#27C57D","#A15DD4"],
@@ -80,26 +80,28 @@ function Barchart(options){
         var canvasActualWidth = this.canvas.width - this.options.outer_padding * 2;
  
         //drawing the grid lines
-        var gridValue = 0;
-        while (gridValue <= maxValue){
-            var gridY = canvasActualHeight * (1 - gridValue/maxValue) + this.options.outer_padding;
-            drawLine(
-                this.ctx,
-                0,
-                gridY,
-                this.canvas.width,
-                gridY,
-                this.options.gridColor
-            );
-             
-            //writing grid markers
-            this.ctx.save();
-            this.ctx.fillStyle = this.options.gridColor;
-            this.ctx.font = "bold 10px Arial";
-            this.ctx.fillText(gridValue, 10,gridY - 2);
-            this.ctx.restore();
- 
-            gridValue+=this.options.gridScale;
+        if (this.options.gridScale > 0) {
+            var gridValue = 0;
+            while (gridValue <= maxValue){
+                var gridY = canvasActualHeight * (1 - gridValue/maxValue) + this.options.outer_padding;
+                drawLine(
+                    this.ctx,
+                    0,
+                    gridY,
+                    this.canvas.width,
+                    gridY,
+                    this.options.gridColor
+                );
+                 
+                //writing grid markers
+                this.ctx.save();
+                this.ctx.fillStyle = this.options.gridColor;
+                this.ctx.font = "bold 10px Arial";
+                this.ctx.fillText(gridValue, 10,gridY - 2);
+                this.ctx.restore();
+     
+                gridValue+=this.options.gridScale;
+            }
         }
   
         //drawing the bars
