@@ -5,10 +5,10 @@ myCanvas.height = 600;
 var ctx = myCanvas.getContext("2d");
 
 var coalitions = {
-    "Order": 11,
-    "Federation": 13,
-    "Alliance": 5,
-    "Assembly": 10
+    "Order": 1100,
+    "Federation": 1350,
+    "Alliance": 680,
+    "Assembly": 1020
 };
 
 var myBarchart = new Barchart(
@@ -17,7 +17,7 @@ var myBarchart = new Barchart(
         outer_padding:30,
         inner_padding:10,
         arrow_height:30,
-        gridScale:5,
+        gridScale:250,
         gridColor:"#eeeeee",
         data:coalitions,
         colors:["#FF6849","#184D9B", "#27C57D","#A15DD4"],
@@ -46,7 +46,7 @@ function addImageProcess(src){
   })
 }
 
-async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image){
+async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score){
     height = height - arrow_height;
     ctx.save();
     ctx.fillStyle=color;
@@ -56,7 +56,11 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.lineTo(upperLeftCornerX + width, upperLeftCornerY + height);
     ctx.lineTo(upperLeftCornerX + width / 2, upperLeftCornerY + height + arrow_height);
     ctx.fill();
-    ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width);
+    ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width); 
+    ctx.font = "20px Arial";
+    ctx.fillStyle="white";
+    ctx.textAlign = "center";
+    ctx.fillText(score,upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5));
     ctx.restore();
 }
 
@@ -115,7 +119,8 @@ function Barchart(options){
                 barHeight,
                 arrow_height,
                 this.colors[barIndex%this.colors.length],
-                this.images[barIndex%this.images.length]
+                this.images[barIndex%this.images.length],
+                val
             );
  
             barIndex++;
