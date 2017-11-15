@@ -93,8 +93,8 @@ function drawRifter(ctx, upperLeftCornerX, upperLeftCornerY, width, height,color
     ctx.stroke();
 }
 
-async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score, yearScore){
-    height = height - arrow_height;
+function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score, yearScore){
+    height = Math.round(height - arrow_height);
     ctx.save();
     ctx.fillStyle=color;
     ctx.fillRect(upperLeftCornerX,upperLeftCornerY,width,height);
@@ -103,7 +103,7 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.lineTo(upperLeftCornerX + width, upperLeftCornerY + height);
     ctx.lineTo(upperLeftCornerX + width / 2, upperLeftCornerY + height + arrow_height);
     ctx.fill();
-    ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width);
+    ctx.drawImage(image, upperLeftCornerX, upperLeftCornerY + height - width, width, width);
     drawText(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5), width * 20/100, "white", score);
     drawRifter(ctx, upperLeftCornerX + width * 9/140, upperLeftCornerY + height - width * 9/140, width - width * 9/140 * 2,  arrow_height - width * 6/140, "white");
     drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/4, arrow_height/8, color);
@@ -112,71 +112,81 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.restore();
 }
 
+function drawChart(chart) {
+    // if not 100% done, request another frame
+    if (chart.percent++ < 50) {
+        requestAnimationFrame(function() {drawChart(chart);});
+    }
+    chart.ctx.clearRect(0, 0, chart.canvas.width, chart.canvas.height);
+    var maxValue = 0;
+    for (var categ in chart.options.data){
+        maxValue = Math.max(maxValue,chart.options.data[categ]);
+    }
+    var canvasActualHeight = chart.canvas.height - chart.options.outer_padding * 2;
+    var canvasActualWidth = chart.canvas.width - chart.options.outer_padding * 2;
+
+    //drawing the grid lines
+    if (chart.options.gridScale > 0) {
+        var gridValue = 0;
+        while (gridValue <= maxValue){
+            var gridY = canvasActualHeight * (1 - gridValue/maxValue) + chart.options.outer_padding;
+            drawLine(
+                chart.ctx,
+                0,
+                gridY,
+                chart.canvas.width,
+                gridY,
+                chart.options.gridColor
+            );
+             
+            //writing grid markers
+            chart.ctx.save();
+            chart.ctx.fillStyle = chart.options.gridColor;
+            chart.ctx.font = "bold 10px Arial";
+            chart.ctx.fillText(gridValue, 10,gridY - 2);
+            chart.ctx.restore();
+ 
+            gridValue+=chart.options.gridScale;
+        }
+    }
+
+    //drawing the bars
+    var barIndex = 0;
+    var numberOfBars = Object.keys(chart.options.data).length;
+    var barSize = (canvasActualWidth)/numberOfBars - chart.options.inner_padding;
+
+    for (categ in chart.options.data){
+        var val = chart.options.data[categ];
+        var barHeight = Math.round(canvasActualHeight * val/maxValue);
+        var arrow_height = Math.round(barSize * chart.options.arrow_height/100);
+        drawBar(
+            chart.ctx,
+            chart.options.outer_padding + barIndex * (barSize + chart.options.inner_padding),
+            chart.options.outer_padding,
+            barSize,
+            barHeight * chart.percent/50,
+            arrow_height,
+            chart.colors[barIndex%chart.colors.length],
+            chart.images[barIndex%chart.images.length],
+            Math.round(val * chart.percent/51),
+            chart.yearScore[barIndex%chart.yearScore.length]
+        );
+
+        barIndex++;
+    }
+}
+
 function Barchart(options){
     this.options = options;
     this.canvas = options.canvas;
     this.ctx = this.canvas.getContext("2d");
     this.colors = options.colors;
-    this.images = options.images;
+    // this.images = options.images;
     this.yearScore = options.year_score;
+    this.percent = 1;
   
-    this.draw = function(){
-        var maxValue = 0;
-        for (var categ in this.options.data){
-            maxValue = Math.max(maxValue,this.options.data[categ]);
-        }
-        var canvasActualHeight = this.canvas.height - this.options.outer_padding * 2;
-        var canvasActualWidth = this.canvas.width - this.options.outer_padding * 2;
- 
-        //drawing the grid lines
-        if (this.options.gridScale > 0) {
-            var gridValue = 0;
-            while (gridValue <= maxValue){
-                var gridY = canvasActualHeight * (1 - gridValue/maxValue) + this.options.outer_padding;
-                drawLine(
-                    this.ctx,
-                    0,
-                    gridY,
-                    this.canvas.width,
-                    gridY,
-                    this.options.gridColor
-                );
-                 
-                //writing grid markers
-                this.ctx.save();
-                this.ctx.fillStyle = this.options.gridColor;
-                this.ctx.font = "bold 10px Arial";
-                this.ctx.fillText(gridValue, 10,gridY - 2);
-                this.ctx.restore();
-     
-                gridValue+=this.options.gridScale;
-            }
-        }
-  
-        //drawing the bars
-        var barIndex = 0;
-        var numberOfBars = Object.keys(this.options.data).length;
-        var barSize = (canvasActualWidth)/numberOfBars - this.options.inner_padding;
- 
-        for (categ in this.options.data){
-            var val = this.options.data[categ];
-            var barHeight = Math.round(canvasActualHeight * val/maxValue);
-            var arrow_height = Math.round(barSize * this.options.arrow_height/100);
-            drawBar(
-                this.ctx,
-                this.options.outer_padding + barIndex * (barSize + this.options.inner_padding),
-                this.options.outer_padding,
-                barSize,
-                barHeight,
-                arrow_height,
-                this.colors[barIndex%this.colors.length],
-                this.images[barIndex%this.images.length],
-                val,
-                this.yearScore[barIndex%this.yearScore.length]
-            );
- 
-            barIndex++;
-        }
-  
+    this.draw = async function(){
+        this.images = [await addImageProcess(options.images[0]), await addImageProcess(options.images[1]), await addImageProcess(options.images[2]), await addImageProcess(options.images[3])];
+        drawChart(this);
     }
 }
