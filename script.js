@@ -109,7 +109,7 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width);
     drawText(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5), width * 20/100, "white", score);
     drawRifter(ctx, upperLeftCornerX + 9, upperLeftCornerY + height - 9, width - 18,  arrow_height - 6, "white");
-    drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/3, arrow_height/6, color);
+    drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/4, arrow_height/8, color);
     drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
     drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
     ctx.restore();
