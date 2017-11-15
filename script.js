@@ -6,7 +6,7 @@ var ctx = myCanvas.getContext("2d");
 
 var coalitions = {
     "Order": 1100,
-    "Federation": 1350,
+    "Federation": 850,
     "Alliance": 670,
     "Assembly": 1020
 };
@@ -21,7 +21,8 @@ var myBarchart = new Barchart(
         gridColor:"#eeeeee",
         data:coalitions,
         colors:["#FF6849","#184D9B", "#27C57D","#A15DD4"],
-        images:["images/order.png","images/federation.png", "images/alliance.png","images/assembly.png"]
+        images:["images/order.png","images/federation.png", "images/alliance.png","images/assembly.png"],
+        year_score:[1, 0, 2, 2]
     }
 );
 myBarchart.draw();
@@ -95,7 +96,7 @@ function drawRifter(ctx, upperLeftCornerX, upperLeftCornerY, width, height,color
     ctx.stroke();
 }
 
-async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score){
+async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, arrow_height,color, image, score, yearScore){
     height = height - arrow_height;
     ctx.save();
     ctx.fillStyle=color;
@@ -109,8 +110,8 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     drawText(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5), width * 20/100, "white", score);
     drawRifter(ctx, upperLeftCornerX + 9, upperLeftCornerY + height - 9, width - 18,  arrow_height - 6, "white");
     drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/3, arrow_height/6, color);
-    drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, 7);
-    drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, 7);
+    drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
+    drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
     ctx.restore();
 }
 
@@ -120,6 +121,7 @@ function Barchart(options){
     this.ctx = this.canvas.getContext("2d");
     this.colors = options.colors;
     this.images = options.images;
+    this.yearScore = options.year_score;
   
     this.draw = function(){
         var maxValue = 0;
@@ -172,7 +174,8 @@ function Barchart(options){
                 arrow_height,
                 this.colors[barIndex%this.colors.length],
                 this.images[barIndex%this.images.length],
-                val
+                val,
+                this.yearScore[barIndex%this.yearScore.length]
             );
  
             barIndex++;
