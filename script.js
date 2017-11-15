@@ -15,8 +15,8 @@ var myBarchart = new Barchart(
 {
         canvas:myCanvas,
         outer_padding:30,
-        inner_padding:10,
-        arrow_height:30,
+        inner_padding:20,
+        arrow_height:30, // between 25 -> 35: proportionnal to each bar height
         gridScale:0,
         gridColor:"#eeeeee",
         data:coalitions,
@@ -156,7 +156,7 @@ function Barchart(options){
         //drawing the bars
         var barIndex = 0;
         var numberOfBars = Object.keys(this.options.data).length;
-        var barSize = (canvasActualWidth)/numberOfBars;
+        var barSize = (canvasActualWidth)/numberOfBars - this.options.inner_padding;
  
         for (categ in this.options.data){
             var val = this.options.data[categ];
