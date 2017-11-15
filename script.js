@@ -22,7 +22,7 @@ var myBarchart = new Barchart(
         data:coalitions,
         colors:["#FF6849","#184D9B", "#27C57D","#A15DD4"],
         images:["images/order.png","images/federation.png", "images/alliance.png","images/assembly.png"],
-        year_score:[1, 0, 2, 2]
+        year_score:[1, 10, 2, 2]
     }
 );
 myBarchart.draw();
@@ -85,11 +85,8 @@ function drawText(ctx, upperLeftCornerX, upperLeftCornerY, fontSize, fontColor, 
 
 function drawRifter(ctx, upperLeftCornerX, upperLeftCornerY, width, height,color) {
     ctx.strokeStyle=color;
-    ctx.lineWidth=15;
+    ctx.lineWidth=width * 15/100;
     ctx.beginPath();
-    // ctx.moveTo(upperLeftCornerX, upperLeftCornerY);
-    // ctx.lineTo(upperLeftCornerX + width/2, upperLeftCornerY + height);
-    // ctx.lineTo(upperLeftCornerX + width, upperLeftCornerY);
     ctx.moveTo(upperLeftCornerX, upperLeftCornerY);
     ctx.lineTo(upperLeftCornerX + width / 2, upperLeftCornerY + height);
     ctx.lineTo(upperLeftCornerX + width, upperLeftCornerY);
@@ -108,10 +105,10 @@ async function drawBar(ctx, upperLeftCornerX, upperLeftCornerY, width, height, a
     ctx.fill();
     ctx.drawImage(await addImageProcess(image), upperLeftCornerX, upperLeftCornerY + height - width, width, width);
     drawText(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height - Math.round(width * 4/5), width * 20/100, "white", score);
-    drawRifter(ctx, upperLeftCornerX + 9, upperLeftCornerY + height - 9, width - 18,  arrow_height - 6, "white");
+    drawRifter(ctx, upperLeftCornerX + width * 9/140, upperLeftCornerY + height - width * 9/140, width - width * 9/140 * 2,  arrow_height - width * 6/140, "white");
     drawStar(ctx, upperLeftCornerX + width/2, upperLeftCornerY + height + arrow_height/4,5, arrow_height/4, arrow_height/8, color);
-    drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
-    drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 12/100, color, yearScore);
+    drawText(ctx, upperLeftCornerX + width/6, upperLeftCornerY + height + arrow_height/8, width * 11/100, color, yearScore);
+    drawText(ctx, upperLeftCornerX + width*5/6, upperLeftCornerY + height + arrow_height/8, width * 11/100, color, yearScore);
     ctx.restore();
 }
 
