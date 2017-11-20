@@ -14,7 +14,7 @@ var coalitions = {
 var myBarchart = new Barchart(
 {
         canvas:myCanvas,
-        outer_padding:30,
+        outer_padding: myCanvas.width/20,
         inner_padding: myCanvas.width/10,
         arrow_height:30, // between 25 -> 35: proportionnal to each bar height
         gridScale:0,
@@ -22,6 +22,7 @@ var myBarchart = new Barchart(
         data:coalitions,
         colors:["#FF6849","#184D9B", "#27C57D","#A15DD4"],
         images:["images/the_order-emoji.png","images/the_federation-emoji.png", "images/the_alliance-emoji.png","images/the_assembly-emoji.png"],
+        bckGrnd:["images/order_background.png","images/federation_background.png", "images/alliance_background.png","images/assembly_background.png"],
         year_score:[1, 10, 2, 2]
     }
 );
@@ -122,7 +123,7 @@ function drawChart(chart) {
     for (var categ in chart.options.data){
         maxValue = Math.max(maxValue,chart.options.data[categ]);
     }
-    var canvasActualHeight = chart.canvas.height - chart.options.outer_padding * 2;
+    var canvasActualHeight = chart.canvas.height; //- chart.options.outer_padding * 2;
     var canvasActualWidth = chart.canvas.width - chart.options.outer_padding * 2;
     //drawing the bars
     var barIndex = 0;
@@ -131,12 +132,14 @@ function drawChart(chart) {
 
     for (categ in chart.options.data){
         var val = chart.options.data[categ];
-        var barHeight = Math.round(canvasActualHeight * val/maxValue);
+        var barHeight = Math.round(0.90 * canvasActualHeight * val/maxValue);
         var arrow_height = Math.round(barSize * chart.options.arrow_height/100);
+        let background = chart.background[barIndex%chart.background.length];
+        ctx.drawImage(background, 0, 0, background.naturalWidth/numberOfBars, background.naturalHeight, barIndex * (canvasActualWidth)/numberOfBars, 0, (canvasActualWidth)/numberOfBars, canvasActualHeight);
         drawBar(
             chart.ctx,
             chart.options.outer_padding + barIndex * (barSize + chart.options.inner_padding),
-            chart.options.outer_padding,
+            0,
             barSize,
             barHeight * chart.percent/50,
             arrow_height,
@@ -161,6 +164,7 @@ function Barchart(options){
   
     this.draw = async function(){
         this.images = [await addImageProcess(options.images[0]), await addImageProcess(options.images[1]), await addImageProcess(options.images[2]), await addImageProcess(options.images[3])];
+        this.background = [await addImageProcess(options.bckGrnd[0]), await addImageProcess(options.bckGrnd[1]), await addImageProcess(options.bckGrnd[2]), await addImageProcess(options.bckGrnd[3])];
         drawChart(this);
     }
 }
